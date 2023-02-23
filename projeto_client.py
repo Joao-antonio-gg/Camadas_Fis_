@@ -4,12 +4,13 @@ import numpy as np
 import random 
 
 # Definindo a porta de entrada
-serialName = "COM5"
+serialName = "COM6"
 
 def main():
     try:
         print("Iniciou o main")
-        com1 = enlance(serialName)
+        com1 = enlace(serialName)
+    
 
         # Definindo comandos (Byte array)
         c1 = b'\x00\x00\x00\x00'
@@ -35,22 +36,24 @@ def main():
         # comando de começo de transmissão, comando de começo de comando, comando de fim de comando, comando de fim de transmissão.
         # como verificar se nada foi perdido?
 
-        # Definindo o reebidor rxBuffer
-                
+        # Definindo o recebidor rxBuffer
+        num_com = random.randint(10, 30).to_bytes(1, 'big') # define um numero aleatorio de comandos a serem executados 
+        
+        print(num_com)
+        #TRANSFORMAR num_com EM BYTE
+        
         com1.enable()
-        txLen = len(txBuffer)
+        txLen = len(num_com) # num_com equivale ao txBuffer. É referente ao numero de comandos à ser enviado. 
         rxBuffer, nRx = com1.getData(txLen)
-
-        num_com = random.randint(10, 30) # define um numero aleatorio de comandos a serem executados 
         
         com1.sendData(np.asarray(m_init))
         for i in range (1, num_com):
-            # # com1.sendData(np.asarray(txBuffer))  #as array apenas como boa pratica para casos de ter uma outra forma de dados
+            # com1.sendData(np.asarray(txBuffer))  #as array apenas como boa pratica para casos de ter uma outra forma de dados
             # com1.sendData(np.asarray(c_init))
             # com1.sendData(np.asarray(comandos[random.randint(0,8)])) 
             com_env = comandos[random.randint(0,8)]
             str_com = str(com_env)
-            size = 0 # prone to bugs
+            size = 0 # talvez de bug.
             for char in str_com:
                 if char == "x":
                     size += 1
