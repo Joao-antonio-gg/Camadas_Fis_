@@ -7,15 +7,9 @@ import random
 import time
 import sys
 
-# voce deverá descomentar e configurar a porta com através da qual ira fazer comunicaçao
-#   para saber a sua porta, execute no terminal :
-#   python -m serial.tools.list_ports
-# se estiver usando windows, o gerenciador de dispositivos informa a porta
-
-# Definindo os comandos a serem enviados
 
 
-serialName = "COM5"                    
+serialName = "COM8"                    
 
 def main():
     try:    
@@ -43,12 +37,13 @@ def main():
         
         # Ativa comunicacao. Inicia os threads e a comunicação seiral 
         com1.enable()
-        print("enviando byte de sacrifício")
+        time.sleep(.2)
         com1.sendData(b'00')
+        time.sleep(1)
 
         # Enviando a quantidade de comandos que será enviado
         print(f"Serão enviados {nCmd} pacotes de comandos\n")
-        nPacotes = nCmd.to_bytes(2, byteorder="big")
+        nPacotes = nCmd.to_bytes(1, byteorder="big")
         com1.sendData(nPacotes)
         time.sleep(.05)
 
@@ -60,30 +55,35 @@ def main():
             txBuffer = i        
 
             # Transformando o tamanho do pacote a ser enviado em bytes
-            txBufferHeader = txBufferLen.to_bytes(2, byteorder="big") 
+            txBufferHeader = txBufferLen.to_bytes(1, byteorder="big") 
+            
 
             # Enviando o tamanho do pacote em bytes
-            com1.sendData(txBufferHeader)
-
+            com1.sendData(np.asarray(txBufferHeader))
+            time.sleep(.05)
             # Enviando o pacote
-            com1.sendData(txBuffer)
+            com1.sendData(np.asarray(txBuffer))
+            print(txBufferHeader, txBuffer)
 
             time.sleep(.05)
             
         print("Pacotes enviados!\n")  
 
         print("Esperando confirmação da quantidade de pacotes recebidos pelo server...\n")
-        try:
-            nCmdConfirmacao, t = com1.getData(2)
+        tempo = time.time()
+        while com1.rx.getIsEmpty():
+            tempo2 = time.time()
+            if  tempo2- tempo > 5: 
+                print("Tempo de espera esgotado")
+                break
+        else:
+            nCmdConfirmacao, t = com1.getData(1)
             nCmdConfirmacaoInt = int.from_bytes(nCmdConfirmacao, "big") 
 
             if nCmdConfirmacaoInt == nCmd:
                 print("Quantidade de pacotes recebidos é IGUAL")
             else:
-                print("Servidor não confirmou que recebeu a mensagem") 
-        except:
-            print("Time Out: mensagem de confirmação não recebida!")     
-
+                print("Servidor não confirmou que recebeu a mensagem")     
         
         print("-------------------------")
         print("Comunicação encerrada")
