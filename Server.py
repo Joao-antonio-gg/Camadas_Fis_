@@ -8,7 +8,7 @@ import numpy as np
 import time
 
 
-serialName = "COM8"                    # Windows(variacao de)
+serialName = "COM7"                   
 
 def main():
     try:
@@ -30,20 +30,23 @@ def main():
         print("RECEPÇÃO VAI COMEÇAR\n")
 
         # Recebendo a quantidade de comandos que será enviado
-        nCmd, t = com1.getData(2)
+        nCmd, t = com1.getData(1)
         nCmdInt = int.from_bytes(nCmd, "big")
         print(f"Serão recebidos {nCmdInt} pacotes de comandos\n")
         
         x = 0
         while x < nCmdInt:
+            #print(x)
             # Recebendo o tamanho do pacote
-            rxBufferHeader, rxHeaderLen = com1.getData(2)
+            rxBufferHeader, rxHeaderLen = com1.getData(1)
 
             # Transformando o tamanho do pacote em um inteiro
             rxBufferResponse = int.from_bytes(rxBufferHeader, "big")
+            
 
             # Recebendo o pacote
             rxBuffer, rxBufferLen = com1.getData(rxBufferResponse)
+            print(rxBufferHeader, rxBuffer)
 
             x += 1
 
@@ -51,13 +54,9 @@ def main():
 
         # Retornando quantidade de pacotes recebidos para o client
         print("Enviando a quantidade de pacotes recebidos ao client para confirmação\n")
-        com1.sendData(nCmd)
+        # com1.sendData(x.to_bytes(1,byteorder="big"))
 
 
-
-        print("-------------------------")
-        print("Comunicação encerrada")
-        print("-------------------------")
         com1.disable()
         
     except Exception as erro:
