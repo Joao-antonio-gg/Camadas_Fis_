@@ -9,7 +9,7 @@ import time
 import sys
 import math
 
-serialName = "COM8"                   
+serialName = "COM10"                   
 
 def main():
     try:
