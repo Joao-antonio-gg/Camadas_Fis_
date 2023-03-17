@@ -68,23 +68,25 @@ class RX(object):
         return(b)
 
     def getNData(self, size):
-        tempoI = time.time()
         while(self.getBufferLen() < size):
-            time.sleep(0.05)
-            tempoF = time.time()
-            if (tempoF - tempoI) >= 5:
-                return "Servidor inativo! Vamos tentar reenviar o pacote.\n"
-
+            time.sleep(0.05)                 
         return(self.getBuffer(size))
+
 
     def getNDataServer(self, size):
         tempoI = time.time()
+        tempoI2 = time.time()
         while(self.getBufferLen() < size):
             time.sleep(0.05)
             tempoF = time.time()
+
             if (tempoF - tempoI) >= 2:
                 print("Pacote não recebido pós 2 segundos! Por favor envie o pacote.\n")
                 tempoI = time.time()
+            if (tempoF - tempoI2) >= 20:
+                print(" 20 segundos sem resposta do cliente, encerrando conexão!")
+                exit()
+
         return(self.getBuffer(size))
 
 
