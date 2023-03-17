@@ -38,6 +38,7 @@ class Server:
         pacote, lenPacote = self.serverCom.getData(n)
         self.createLog(pacote, 'recebimento')
         pacote = list(pacote)
+        print(pacote)
         pacote = list(map(int, pacote))
         pacote[0] = 2
         responseHandShake = b''
