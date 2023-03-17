@@ -117,7 +117,7 @@ class Server:
         
         
 
-serialName = "COM2"     
+serialName = "COM8"     
 
 def main():
     try:
