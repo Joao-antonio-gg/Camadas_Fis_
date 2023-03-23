@@ -8,7 +8,7 @@ from datetime import datetime
 
 #   python -m serial.tools.list_ports
 
-com1 = enlace('COM1')
+com1 = enlace('COM5')  # COM1
 
 class Client:
 
@@ -136,15 +136,15 @@ class Client:
             f.write(self.logs)
                 
             
-serialName = "COM3"     
-path = "Imagens/txImage.png"  
+serialName = "COM5"     # COM3
+path = "Projeto_4/Imagens/txImage.png"  
 file = open(path, 'rb').read()           
 
 def main():
     try:
         
         # * INICIALIZANDO CLIENT
-        cliente = Client(file, 'COM1')
+        cliente = Client(file, 'COM5')
         cliente.startClient()
 
         # * HANDSHAKE
