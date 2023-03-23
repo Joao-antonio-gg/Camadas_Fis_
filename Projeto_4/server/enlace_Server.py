@@ -11,11 +11,11 @@
 import time
 
 # Interface Física
-from interfaceFisica import fisica
+from interfaceFisica_Server import fisica
 
 # enlace Tx e Rx
-from enlaceRx import RX
-from enlaceTx import TX
+from enlaceRx_Server import RX
+from enlaceTx_Server import TX
 
 class enlace(object):
     
@@ -41,8 +41,4 @@ class enlace(object):
         
     def getData(self, size):
         data = self.rx.getNData(size)
-        return(data, len(data))
-
-    def getDataServer(self, size):
-        data = self.rx.getNDataServer(size)
         return(data, len(data))
