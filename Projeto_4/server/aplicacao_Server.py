@@ -1,5 +1,4 @@
 
-
 from base64 import decode
 from calendar import c
 from http import client, server
@@ -14,7 +13,8 @@ import numpy as np
 from random import randint, choice
 from datetime import datetime
 
-serialName = "COM1"                  # Windows(variacao de)
+
+serialName = "COM8"                  # Windows(variacao de)
 
 
 def main():
@@ -28,7 +28,6 @@ def main():
         com1.enable()
         #Se chegamos até aqui, a comunicação foi aberta com sucesso. Faça um print para informar.
         print("Communication Successfull!")
-
 
 
         def log_recebe(tipo,tamanho, n_atual, n_total, local):
@@ -142,7 +141,7 @@ def main():
 
         img = b''
 
-        while cont <= numero_de_pacotes:
+        while cont < numero_de_pacotes:
 
             l = 0
 
@@ -152,6 +151,7 @@ def main():
             timer_2 = 0
 
             print("ouvindo mensagem:")
+
 
             while l < 10:
                 l = com1.rx.getBufferLen()
@@ -241,6 +241,7 @@ def main():
                         img+=pct_imagem
                         
                         pkg+=1
+                        print('pkg: ', pkg)
                         
                         tipo4(last_pkg)
                         
@@ -283,7 +284,7 @@ def main():
 
         print('SUCESSO DE ENVIO')
 
-        imgW = "img/copyDog.jpg"
+        imgW = "img/copyDog.png"
         f = open(imgW, 'wb')
         f.write(img)
         f.close()
@@ -307,4 +308,9 @@ def main():
     #so roda o main quando for executado do terminal ... se for chamado dentro de outro modulo nao roda
 if __name__ == "__main__":
     main()
-    
+        
+
+
+
+
+        
