@@ -1,13 +1,6 @@
-
-from base64 import decode
-from calendar import c
-from http import client, server
-from itertools import count
-from operator import index, indexOf
-from tkinter import Image
 from crccheck.crc import Crc16
 
-from enlace_Server import *
+from enlace import *
 import time
 import numpy as np
 from random import randint, choice
@@ -19,8 +12,7 @@ serialName = "COM8"                  # Windows(variacao de)
 
 def main():
     try:
-        #declaramos um objeto do tipo enlace com o nome "com". Essa é a camada inferior à aplicação. Observe que um parametro
-        #para declarar esse objeto é o nome da porta.
+       
         com1 = enlace(serialName)
         
     

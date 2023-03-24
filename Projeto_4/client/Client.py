@@ -29,12 +29,12 @@ def main():
         imgR = "client/img/dog.png"
         print("Loading Image: ")
         print(" - {}".format(imgR))
-        dog = open(imgR, 'rb').read()
+        image = open(imgR, 'rb').read()
 
 
-        print(f"a imagem tem  tamanho: {len(dog)}")
-        size_of_dog = int(len(dog)/114)
-        print(f"a imagem sera dividida em: {size_of_dog} pacotes")
+        print(f"a imagem tem  tamanho: {len(image)}")
+        size_of_image = int(len(image)/114)
+        print(f"a imagem sera dividida em: {size_of_image} pacotes")
 
 
         eop = [0xAA, 0xBB, 0xCC, 0xDD]
@@ -50,66 +50,55 @@ def main():
             else: #h3 - numero total de pacotes ; h4 - pacote atual; h5 size; 
                 message = str(datetime.now()) + " / envio /" + str(head[0]) + " /" + str(head[5]) + " /" + str(head[4]) + " /" + str(head[3])
 
-            log = "client\log\Client5.txt"
+            log = "client\log\Client.txt"
             with open(log, 'a') as f:
                 f.write(message)
                 f.write('\n')
 
 
 
-            # return "lol"
-        #eh o handhsake, enviada pelo client para ver se pode comecar a transmissao
-        #tipo 2 eh a resposta do handshake, eh recebida pelo client
         def type_1():
-            #lista de ints, cada int sera escrito como um byte quando byte(l)
-            #lista do head
-            l = [1, 0, 0, size_of_dog, 0, 10, 0, 0, 0, 0]       
-            #fazemos uma lista de bytes com a lista de ints, cada byte tem tamanho e posicao igual ao do int equivalente na lista
+         
+            l = [1, 0, 0, size_of_image, 0, 10, 0, 0, 0, 0]       
+            
             handshake = bytes(l + eop) 
             pacote = handshake  #temporario     
-
-            #mandando o HandShake:
-           # print("mandando o handhshake")
             txBuffer = pacote
-            #print(f"enviando: {txBuffer}")
+
             time.sleep(0.1)
             com1.sendData(np.asarray(txBuffer))
             writeLog(l)
             print("mandando o handhshake")
             print(f"handhsake: {list(pacote)}")
 
-        
-        #manda a imagem, monta o pacote baseado no index recebido
-        #TODO re-escrever o codigo 
-        #tipo 3 eh a mensagem de dados, o client envia os dados e escuta uma resposta
+      
         def type_3(i):
-            #print("sending")
-            #variando o tamanho da payload quando chegamos no ultimo pacote
+       
             
 
             if i < 10:
-                payload =  dog[114*(i): 114*(i + 1)]
+                payload =  image[114*(i): 114*(i + 1)]
 
                 crc = Crc16().calc(payload)
                 crc = int.to_bytes(crc, 2, byteorder='big')
                 crc1 = crc[0]
                 crc2 = crc[1]
                 
-                h = [3, 0, 0, size_of_dog, i, 114, 0, 0, crc1, crc2]
+                h = [3, 0, 0, size_of_image, i, 114, 0, 0, crc1, crc2]
                 pacote = bytes(h + list(payload) + eop)
 
             else: 
                 print("ultimo pacote!!")
-                size = len(list(dog[114*i: ]))
+                size = len(list(image[114*i: ]))
                 
-                payload =  dog[114*(i):]
+                payload =  image[114*(i):]
 
                 crc = Crc16().calc(payload)
                 crc = int.to_bytes(crc, 2, byteorder='big')
                 crc1 = crc[0]
                 crc2 = crc[1]
                 
-                h = [3, 0, 0, size_of_dog, i, size, 0, 0, crc1, crc2]
+                h = [3, 0, 0, size_of_image, i, size, 0, 0, crc1, crc2]
                 pacote = bytes(h + list(payload) + eop)
                 
 
@@ -164,8 +153,7 @@ def main():
             if l >= 10:
                 txLen = 10
                 time.sleep(0.1)
-                rxBuffer, nRx = com1.getData(txLen) #pegando o HEAD, 1 = timer 1, 5 segundos
-                #print(f"recebido: {list(rxBuffer)}")
+                rxBuffer, nRx = com1.getData(txLen) 
 
                 rxBuffer = list(rxBuffer)
                 codigo = rxBuffer[0]
@@ -211,7 +199,7 @@ def main():
             
             while not acabou:
                 
-                if i <= size_of_dog:
+                if i <= size_of_image:
 
                     if i > 1:
                         
@@ -241,21 +229,5 @@ def main():
         print(erro)
         com1.disable()
 
-
-        
-
-    #so roda o main quando for executado do terminal ... se for chamado dentro de outro modulo nao roda
 if __name__ == "__main__":
     main()
-
-    # answer = int(input("Client(0.1) or Server(0)?"))
-
-    # if answer is 1:
-    #     print("client")
-
-    # if answer is not 1:
-    #     print("server")
-
-    # ready = input("Press ENTER when ready")
-    # main(answer)
-    
